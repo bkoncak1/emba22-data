@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swift Container Explorer</title>
+</head>
+<body>
+    <h1>Swift Container Explorer</h1>
+    <label for="containerUrl">Swift Container URL:</label>
+    <input type="text" id="containerUrl" value="https://leafcloud.store/swift/v1/AUTH_4b0a01280ce44ca28813f77de3e3ed2a/emba22/" placeholder="Enter Swift container URL">
+    <button onclick="listObjects()">List Objects</button>
+    <ul id="objectList"></ul>
+
+    <script>
+        async function listObjects() {
+            const containerUrl = document.getElementById('containerUrl').value;
+
+            try {
+                const response = await fetch(containerUrl, {
+                    headers: {
+                        'X-Auth-Token': 'bDbF5aTVIxkPBlzcOf3l9rtMxjqqtWvhROg9d0X2a6Nl-cI62NEk3t_h4GwseGtXZ5l555O0VtDI4QAIUj5oUw' // Replace with your actual auth token
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+
+                const data = await response.text();
+                const objects = data.split('\n').filter(line => line.trim().length > 0);
+
+                const objectList = document.getElementById('objectList');
+                objectList.innerHTML = '';
+                objects.forEach((item) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = item;
+                    objectList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Error fetching objects from Swift container');
+            }
+        }
+    </script>
+</body>
+</html>
